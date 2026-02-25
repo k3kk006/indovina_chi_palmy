@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+  <title>Indovina Chi - Luxury Edition</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="lux-bg"></div>  
+    <div id="emojiBackground"></div>
+
+<!-- NAVBAR -->
+<nav id="mainNavbar" class="navbar hidden">
+  <div class="nav-left">
+    <h1>Indovina Chi – Palmariggi Edition</h1>
+  </div>
+  <div class="nav-right">
+    <button id="logoutBtn" class="logout-btn">Logout</button>
+  </div>
+</nav>
+
+<!-- PASSWORD GENERALE -->
+<div id="siteGate" class="center-screen container">
+
+  <h1 class="main-title">INDOVINA CHI </h1>
+  <h1 class="main-title2">PALMARIGGI EDITION</h1>
+  <br>
+  <div class="password-box">
+    <input style="border: 5px solid #bfa046; text-decoration-color: white;" type="password" id="sitePassword" placeholder="password generale">
+    <br><br>
+    <button type="button" id="siteAccessBtn">prosegui</button>
+  </div>
+</div>
+
+<!-- LOGIN / REGISTRAZIONE -->
+<div id="loginScreen" class="center-screen container hidden">
+  <h2 class="sub-title">Login / Registrazione</h2>
+  <input type="text" id="nicknameInput" class="input-field" placeholder="Inserisci nickname">
+  <input type="password" id="passwordInput" class="input-field" placeholder="Solo admin: password">
+  <button type="button" id="loginBtn" class="main-btn green">Accedi</button>
+  <p id="statusMsg"></p>
+</div>
+
+
+<!-- GAME SCREEN -->
+<div id="gameScreen" class="center-screen container hidden">
+  <h2 class="sub-title">Lobby</h2>
+  
+  <!-- INPUT PER CODICE STANZA -->
+  <input type="text" id="roomInput" class="input-field" placeholder="Codice partita">
+  <button type="button" id="joinBtn" class="main-btn green">Entra in partita</button>
+ <!-- TASTO AVVIO PARTITA -->
+  <div style="margin-top:25px;">
+    <button type="button" id="startBtn" class="main-btn green">Avvia Partita</button>
+  </div>
+  <!-- LISTA GIOCATORI -->
+  <div id="playersList" class="grid"></div>
+    <br><hr>
+  <!-- TABELLONE -->
+  <div id="board" class="grid"></div>
+
+ 
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="center-screen container hidden">
+  <h2 class="sub-title">Pannello Amministratore</h2>
+
+  <!-- Select gestione -->
+  <div class="admin-control">
+    <select id="adminActionSelect" class="admin-select">
+      <option value="">Seleziona operazione</option>
+      <option value="users">Gestione Utenti</option>
+      <option value="characters">Gestione Personaggi</option>
+      <option value="rooms">Gestione Partite</option>
+    </select>
+  </div>
+
+  <!-- SEZIONE UTENTI -->
+  <div id="adminUsersSection" class="admin-section hidden">
+    <h3>Gestione Utenti</h3>
+    <div id="usersList" class="admin-grid"></div>
+  </div>
+
+  <!-- SEZIONE PERSONAGGI -->
+  <div id="adminCharactersSection" class="admin-section hidden">
+
+  <h3>Aggiungi Personaggio</h3>
+
+  <input type="file"
+         id="charFileInput"
+         accept="image/jpeg,image/jpg,image/png,image/webp">
+
+  <button type="button"
+          id="addCharBtn"
+          class="main-btn green">
+    Carica personaggio
+  </button>
+
+  <h3 style="margin-top:20px;">
+    Lista Personaggi
+  </h3>
+
+  <div id="characterList"
+       class="admin-grid"></div>
+
+</div>
+
+  <!-- SEZIONE PARTITE -->
+  <div id="adminRoomsSection" class="admin-section hidden">
+    <h3>Partite Attive</h3>
+    <div id="roomsList" class="admin-grid"></div>
+  </div>
+
+</div>
+
+
+
+<script>
+function startEmojiBackground() {
+  const emojiBg = document.getElementById("emojiBackground");
+  if (!emojiBg) return;
+
+  const emojis = ["💩","🌳","🚗","🎺","💔","🅿️","🎉","🌈","⚽","🔥","🐵","🍌","🦊","🍔"];
+  const total = 30; // numero emoji sullo schermo
+
+  for (let i = 0; i < total; i++) {
+    const span = document.createElement("span");
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    span.innerText = emoji;
+
+    // stile iniziale
+    span.style.position = "absolute";
+    span.style.left = Math.random() * 100 + "vw"; // posizione orizzontale casuale
+    span.style.top = Math.random() * 100 + "vh"; // posizione verticale iniziale casuale
+    span.style.fontSize = 20 + Math.random() * 40 + "px";
+    span.style.opacity = 0.3 + Math.random() * 0.7;
+    span.style.pointerEvents = "none";
+
+    // animazione unica
+    const duration = 5 + Math.random() * 7; // 5–12s
+    const rotate = Math.random() * 360;
+    const xOffset = (Math.random() * 2 - 1) * 50; // oscillazione orizzontale
+
+    span.style.animation = `floatUp ${duration}s linear infinite`;
+    span.style.transform = `translateX(0px) rotate(${rotate}deg)`;
+
+    emojiBg.appendChild(span);
+
+    // movimento oscillante orizzontale con setInterval
+    let direction = 1;
+    let xPos = 0;
+    setInterval(() => {
+      xPos += direction * 0.2;
+      if (xPos > xOffset || xPos < -xOffset) direction *= -1;
+      span.style.transform = `translateX(${xPos}px) rotate(${rotate}deg)`;
+    }, 20);
+  }
+
+  // keyframe globale
+  const style = document.createElement("style");
+  style.innerHTML = `
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-120vh) rotate(360deg); }
+  }`;
+  document.head.appendChild(style);
+}
+
+// chiamare la funzione subito dopo che il DOM è pronto
+window.addEventListener("load", () => {
+  startEmojiBackground();
+});
+</script>
+
+<audio id="bgMusic" loop>
+  <source src="audio/theme.mp3" type="audio/mpeg">
+</audio>
+<script type="module" src="script.js"></script>
+</body>
+</html>
